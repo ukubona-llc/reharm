@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event-Stream · Killing Me Softly, Origin Log</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,4 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38' fill='none' stroke='%23C99B4A' stroke-width='5'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #12141C;
+    --ink-raised: #181B26;
+    --paper: #F5F0E6;
+    --gold: #C99B4A;
+    --violet: #8A6BAE;
+    --line: #3A3D4A;
+    --line-soft: rgba(245,240,230,0.09);
+    --dim: rgba(245,240,230,0.52);
+    --bg: var(--ink);
+    --bg-raised: var(--ink-raised);
+    --fg: var(--paper);
+    --fg-dim: var(--dim);
+    --rule: var(--line-soft);
+    --accent: var(--gold);
+    --accent-2: var(--violet);
+  }
+
+  [data-theme="light"] {
+    --bg: #F5F0E6;
+    --bg-raised: #EAE2D0;
+    --fg: #1C1A14;
+    --fg-dim: rgba(28,26,20,0.58);
+    --rule: rgba(28,26,20,0.12);
+    --accent: #9A6E1F;
+    --accent-2: #5C3E80;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Top bar ---------- */
+  header.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .brand-text .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .brand-text .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 6px 8px 6px 12px;
+    background: var(--bg-raised);
+    transition: border-color 0.3s ease;
+  }
+  .toggle:hover { border-color: var(--accent); }
+
+  .toggle-track {
+    width: 34px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--rule);
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  .toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  [data-theme="light"] .toggle-thumb { transform: translateX(16px); }
+
+  /* ---------- Pentagram logo ---------- */
+  .pentagram {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .pentagram svg {
+    width: 100%;
+    height: 100%;
+    animation: spin 48s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .pentagram .ring {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+  .pentagram .star {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 4.5;
+    stroke-linejoin: round;
+  }
+  .pentagram .vertex {
+    fill: var(--bg);
+    stroke: var(--accent-2);
+    stroke-width: 3;
+    r: 5.5;
+    cursor: pointer;
+  }
+  .pentagram .vertex:hover { fill: var(--accent-2); }
+  .pentagram .vlabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    fill: var(--fg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    animation: counterspin 48s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  @keyframes counterspin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+  .pentagram g.vgroup:hover .vlabel { opacity: 1; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 64px 28px 40px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero .eyebrow::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: clamp(32px, 5.4vw, 52px);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    margin: 14px 0 18px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero p.lede {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--fg-dim);
+    max-width: 58ch;
+  }
+  .hero p.lede code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    background: var(--bg-raised);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--fg);
+  }
+
+  .schema {
+    margin-top: 28px;
+    padding: 14px 16px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--bg-raised);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--fg-dim);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .schema .k { color: var(--accent-2); }
+  .schema .s { color: var(--accent); }
+
+  /* ---------- Log ---------- */
+  .log {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 12px 28px 100px;
+  }
+
+  .entry {
+    position: relative;
+    padding: 36px 0 36px 28px;
+    border-left: 1px solid var(--rule);
+  }
+  .entry:last-child { padding-bottom: 4px; }
+
+  .entry::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 40px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .entry-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--fg-dim);
+    margin-bottom: 10px;
+  }
+  .entry-meta .ts { color: var(--accent); }
+  .entry-meta .tag {
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 2px 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+  }
+
+  .entry h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .entry h2 .who {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--fg-dim);
+    font-size: 0.72em;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .entry p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--fg-dim);
+    max-width: 60ch;
+    margin: 0 0 18px;
+  }
+  .entry p strong { color: var(--fg); font-weight: 500; }
+
+  .frame-wrap {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: #000;
+    aspect-ratio: 16/9;
+    max-width: 560px;
+  }
+  .frame-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .disputed {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--fg-dim);
+    max-width: 60ch;
+  }
+  .disputed .lbl {
+    color: var(--accent-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 10px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  footer {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px 60px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--fg-dim);
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+  }
+  footer .end {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    header.topbar { padding: 14px 18px; }
+    .hero { padding: 44px 18px 28px; }
+    .log { padding: 0 18px 80px; }
+    .entry { padding-left: 20px; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="pentagram">
+      <svg viewBox="0 0 100 100">
+        <circle class="ring" cx="50" cy="50" r="46"></circle>
+        <polygon class="star" points="50,6 61,38 96,38 67,59 78,92 50,71 22,92 33,59 4,38 39,38"></polygon>
+        <g class="vgroup"><circle class="vertex" cx="50" cy="6"></circle><text class="vlabel" x="50" y="-4" text-anchor="middle">I</text></g>
+        <g class="vgroup"><circle class="vertex" cx="96" cy="38"></circle><text class="vlabel" x="108" y="34" text-anchor="start">II</text></g>
+        <g class="vgroup"><circle class="vertex" cx="78" cy="92"></circle><text class="vlabel" x="78" y="105" text-anchor="middle">III</text></g>
+        <g class="vgroup"><circle class="vertex" cx="22" cy="92"></circle><text class="vlabel" x="22" y="105" text-anchor="middle">IV</text></g>
+        <g class="vgroup"><circle class="vertex" cx="4" cy="38"></circle><text class="vlabel" x="-8" y="34" text-anchor="end">V</text></g>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="eyebrow">Ukubona · Stage I</span>
+      <span class="title">Event-Stream Log</span>
+    </div>
+  </div>
+
+  <div class="toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle light and dark mode">
+    <span id="toggleLabel">Dark</span>
+    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="eyebrow">Append-only · No resolution required</span>
+  <h1>Killing Me Softly<br><em>— origin, as logged.</em></h1>
+  <p class="lede">
+    Three witnessed events, timestamped and appended in sequence. This is <code>Stage I</code>
+    of the pentad — Philology folded into raw telemetry. The log does not adjudicate who is right.
+    It records who said what, and when they said it. Resolution, if it happens, is a query run
+    later against this stream — not a property the stream itself needs to have.
+  </p>
+  <div class="schema">
+<span class="k">stage</span>: <span class="s">"I — event-stream"</span>
+<span class="k">mode</span>: <span class="s">append-only</span>
+<span class="k">resolves_contradictions</span>: <span class="s">false</span>
+<span class="k">entries</span>: <span class="s">3</span> <span class="k">videos</span> + <span class="s">1</span> <span class="k">disputed-append</span> (1971–1974, 2003)
+  </div>
+</section>
+
+<main class="log">
+
+  <article class="entry">
+    <div class="entry-meta">
+      <span class="ts">1971 — the catalytic event</span>
+      <span class="tag">source</span>
+    </div>
+    <h2>Empty Chairs
+      <span class="who">Don McLean, live at the Troubadour, Los Angeles</span>
+    </h2>
+    <p>
+      A solo, sparse performance — slow harmonic rhythm, chords in service of the text rather
+      than calling attention to themselves. This is the <strong>witnessed occurrence</strong>,
+      logged before it is compressed into anyone's song.
+    </p>
+    <div class="frame-wrap">
+      <iframe src="https://www.youtube.com/embed/S9McU5zPEjs" title="Don McLean — Empty Chairs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-meta">
+      <span class="ts">1971 — first compression</span>
+      <span class="tag">source</span>
+    </div>
+    <h2>Killing Me Softly with His Song
+      <span class="who">Lori Lieberman, debut album, Capitol Records</span>
+    </h2>
+    <p>
+      Written on a napkin during McLean's set, handed to Norman Gimbel that night, set to music
+      by Charles Fox. <strong>Diatonic, folk-rooted, confessional</strong> — the melody as
+      Fox composed it; the words as Gimbel shaped them from Lieberman's own notes.
+    </p>
+    <div class="frame-wrap">
+      <iframe src="https://www.youtube.com/embed/HwBgjC93hwM" title="Lori Lieberman — Killing Me Softly with His Song" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-meta">
+      <span class="ts">1973 — reharmonization</span>
+      <span class="tag">source</span>
+    </div>
+    <h2>Killing Me Softly with His Song
+      <span class="who">Roberta Flack — No. 1, Billboard Hot 100</span>
+    </h2>
+    <p>
+      Same melody, untouched at Stage III. <strong>Stage IV rebuilt entirely</strong> —
+      extended jazz/soul/gospel voicings, a ii–V–I through A♭ (Fm7 → B♭m7 → E♭7 → A♭maj7),
+      suspended dominant turnarounds. The decoder changes; the latent identity does not.
+    </p>
+    <div class="frame-wrap">
+      <iframe src="https://www.youtube.com/embed/DEbi_YjpA-Y" title="Roberta Flack — Killing Me Softly with His Song" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-meta">
+      <span class="ts">2003 — a later, contested append</span>
+      <span class="tag">dispute</span>
+    </div>
+    <h2>Authorship dispute
+      <span class="who">Norman Gimbel vs. the origin story he told for three decades</span>
+    </h2>
+    <p>
+      No video artifact — this entry exists to keep the log honest. In the mid-2000s Gimbel
+      moved to erase Lieberman's role in the song's origin, going as far as threatening legal
+      action against McLean to force a retraction — after having told the Troubadour story
+      himself, consistently, since the 1970s.
+    </p>
+    <div class="disputed">
+      <span class="lbl">why this stays in the stream</span>
+      Stage I does not resolve who is right. It logs that a self-interested, later entry exists
+      alongside the earlier corroborated ones — motive and timestamp both visible to anyone
+      who queries it downstream.
+    </div>
+  </article>
+
+</main>
+
+<footer>
+  Ukubona · Pentadic Governance Series · Stage I — Event-Stream <span class="end">·</span> append-only, non-adjudicating, θᵗ = Σ Eventᵢ
+</footer>
+
+<script>
+  const root = document.body;
+  const toggle = document.getElementById('themeToggle');
+  const label = document.getElementById('toggleLabel');
+
+  function setTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+  });
+  toggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle.click();
+    }
+  });
+</script>
+
+</body>
+</html>
