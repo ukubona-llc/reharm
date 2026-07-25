@@ -344,6 +344,194 @@
     .pcell { border-bottom: 1px solid var(--rule); }
   }
 
+  /* ---------- Section nav ---------- */
+  .section-nav {
+    position: sticky;
+    top: 73px;
+    z-index: 39;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 28px;
+    max-width: 760px;
+    margin: 0 auto;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--fg-dim);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 6px 13px;
+    white-space: nowrap;
+    transition: border-color 0.25s ease, color 0.25s ease;
+  }
+  .section-nav a:hover { border-color: var(--accent); color: var(--accent); }
+  .section-nav a.new { border-color: var(--accent-2); color: var(--accent-2); }
+
+  /* ---------- Hassabis section ---------- */
+  .hassabis {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 28px 20px;
+  }
+  .hassabis > .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    display: block;
+    margin-bottom: 14px;
+  }
+  .hassabis h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.6vw, 32px);
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+  }
+  .hassabis p.lede {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--fg-dim);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  .triad-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .triad-item {
+    border: 1px solid var(--rule);
+    background: var(--bg-raised);
+    border-radius: 10px;
+    padding: 16px 16px 14px;
+  }
+  .triad-item .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .triad-item p {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--fg-dim);
+    margin: 0;
+  }
+
+  .hrow {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .hrow:last-of-type { border-bottom: 1px solid var(--rule); }
+  .hrow-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--h-color, var(--accent));
+    padding-top: 2px;
+  }
+  .hrow-title {
+    font-size: 14.5px;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .hrow-title .music { color: var(--fg); font-weight: 500; }
+  .hrow-title .arrow {
+    color: var(--h-color, var(--accent));
+    margin: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .hrow-title .comp { color: var(--fg-dim); font-style: italic; }
+  .hrow-note {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--fg-dim);
+    margin-bottom: 10px;
+  }
+  .hrow-note strong { color: var(--fg); font-weight: 500; }
+  .hrow-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hrow-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    color: var(--fg-dim);
+    background: var(--bg-raised);
+  }
+  .hrow-chip.hi { border-color: var(--h-color, var(--accent)); color: var(--h-color, var(--accent)); }
+
+  .hrow:nth-of-type(1) { --h-color: var(--accent-2); }
+  .hrow:nth-of-type(2) { --h-color: var(--accent); }
+  .hrow:nth-of-type(3) { --h-color: var(--accent-2); }
+  .hrow:nth-of-type(4) { --h-color: var(--accent); }
+  .hrow:nth-of-type(5) { --h-color: var(--accent); }
+
+  .data-callout {
+    margin: 34px 0;
+    border: 1px solid var(--rule);
+    background: var(--bg-raised);
+    border-radius: 10px;
+    padding: 20px 22px;
+    border-left: 3px solid var(--accent-2);
+  }
+  .data-callout .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-2);
+    display: block;
+    margin-bottom: 10px;
+  }
+  .data-callout p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-dim);
+    margin: 0 0 10px;
+  }
+  .data-callout p:last-child { margin-bottom: 0; }
+  .data-callout strong { color: var(--fg); font-weight: 500; }
+  .data-callout .corr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--accent);
+    display: block;
+    margin-top: 10px;
+  }
+
+  .close-note {
+    margin: 34px 0 8px;
+    padding: 18px 20px;
+    border-left: 3px solid var(--accent);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-dim);
+  }
+  .close-note strong { color: var(--fg); font-weight: 500; }
+
+  @media (max-width: 640px) {
+    .triad-strip { grid-template-columns: 1fr; }
+    .section-nav { top: 0; }
+  }
+
   /* ---------- Log ---------- */
   .log {
     max-width: 760px;
@@ -500,7 +688,12 @@
   </div>
 </header>
 
-<section class="hero">
+<nav class="section-nav">
+  <a href="#top">Log</a>
+  <a href="#hassabis" class="new">Hassabis criteria ★</a>
+</nav>
+
+<section class="hero" id="top">
   <span class="eyebrow">Append-only · No resolution required</span>
   <h1>Killing Me Softly<br><em>— origin, as logged.</em></h1>
   <p class="lede">
@@ -635,6 +828,98 @@
   </article>
 
 </main>
+
+<section class="hassabis" id="hassabis">
+  <span class="eyebrow">Extracted from the hood-love roundtable · Hassabis triad → Ukubona pentad</span>
+  <h2>Where the checklist ends and the pentad keeps going</h2>
+  <p class="lede">
+    Demis Hassabis's Nobel Lecture names three criteria for a problem worth building AI for:
+    a massive search space, a clear objective function, and lots of data or an accurate simulator.
+    Applied to McLean → Lieberman → Flack, the triad accounts for three of five stages. The other
+    two — the event itself, and the melody as invariant path through the search space — are exactly
+    what a gospel-formed ear refuses to compress into infrastructure.
+  </p>
+
+  <div class="triad-strip">
+    <div class="triad-item"><span class="num">1</span><p>Massive combinatorial search space</p></div>
+    <div class="triad-item"><span class="num">2</span><p>Clear objective function to optimize against</p></div>
+    <div class="triad-item"><span class="num">3</span><p>Lots of data and/or an accurate, efficient simulator</p></div>
+  </div>
+
+  <div class="hrow">
+    <div class="hrow-num">I</div>
+    <div>
+      <div class="hrow-title"><span class="music">The Troubadour, 1971</span><span class="arrow">≠</span><span class="comp">not a Hassabis criterion — assumed</span></div>
+      <div class="hrow-note">A checklist for tractability never needs to ask where the coordinate system starts. But McLean's performance is the fixed point everything downstream is a relationship to — change the event, and the napkin poem, the title, the whole chain doesn't exist. Where Hassabis sees plumbing, philology sees the first commitment.</div>
+    </div>
+  </div>
+
+  <div class="hrow">
+    <div class="hrow-num">II</div>
+    <div>
+      <div class="hrow-title"><span class="music">12TET</span><span class="arrow">↔</span><span class="comp">Hassabis criterion 1</span></div>
+      <div class="hrow-note">Direct match. Twelve semitones, any voicing, any inversion, any substitution — the same order-of-magnitude problem as 10<sup>170</sup> Go positions. Zhu Zaiyu and Stevin didn't search that space either; they compressed it into a closed-form ratio. Fox and Flack both inherit the compression, not the search.</div>
+    </div>
+  </div>
+
+  <div class="hrow">
+    <div class="hrow-num">III</div>
+    <div>
+      <div class="hrow-title"><span class="music">Melody, invariant</span><span class="arrow">≠</span><span class="comp">not a Hassabis criterion — folded in</span></div>
+      <div class="hrow-note">For a tractability checklist, the melody Fox composed is implementation detail — a path taken through the search space, discarded once the objective is reached. For the tradition this song lives in, the path <strong>is</strong> the covenant. Flack doesn't touch it. That refusal to fold Stage III into infrastructure is the whole ethic you named: reharm, remix — but don't fuck with the melody.</div>
+    </div>
+  </div>
+
+  <div class="hrow">
+    <div class="hrow-num">IV</div>
+    <div>
+      <div class="hrow-title"><span class="music">Classical piano + Black church</span><span class="arrow">↔</span><span class="comp">Hassabis criterion 3</span></div>
+      <div class="hrow-note">Direct match, and the richest one in this chain. "Real or simulated" data is reps — and Flack had two independently trained datasets running at once, not one blended "musical background":</div>
+      <div class="hrow-chips">
+        <div class="hrow-chip hi">Lomax AME choir + classical piano, Howard University</div>
+        <div class="hrow-chip">Baptist gospel immersion — Mahalia Jackson, Sam Cooke, live</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hrow">
+    <div class="hrow-num">V</div>
+    <div>
+      <div class="hrow-title"><span class="music">Psychological gravity of the arrangement</span><span class="arrow">↔</span><span class="comp">Hassabis criterion 2</span></div>
+      <div class="hrow-note">Direct match. "Clear objective function" is what "what emotional colors can this melody survive" is naming in musical language — not a scalar Hassabis would recognize, but a target the reharmonization is unmistakably optimizing toward.</div>
+    </div>
+  </div>
+
+  <div class="data-callout">
+    <span class="lbl">Correcting the record, since Stage IV is the whole point here</span>
+    <p>
+      Flack's formal training was at <strong>Howard University</strong>, not Duke Ellington School of the Arts —
+      she won a full scholarship at 15 and studied classical piano and voice there. But the instinct behind
+      "she had a shitload of cultural data from Black church" holds up exactly, and it's more specific than
+      one undifferentiated stream: her mother played organ at <strong>Lomax AME Zion Church</strong>, where
+      Flack sang in the choir alongside her classical training — and separately, she was a regular presence
+      at a local Baptist church, absorbing raw gospel performance from congregants and touring legends
+      including Mahalia Jackson and Sam Cooke.
+    </p>
+    <p>
+      That's two named, distinct training corpora feeding into one arranger: AME liturgical/classical on one
+      channel, Baptist gospel performance practice on another. The Fm7–B♭m7–E♭7–A♭maj7 turnaround isn't
+      generic "soul feel" — it's what happens when both datasets get queried at once and the reharmonization
+      is the retrieval.
+    </p>
+    <span class="corr">source: Howard University, CapitalBop, uDiscoverMusic — cross-checked, 2026</span>
+  </div>
+
+  <div class="close-note">
+    <strong>The actual disagreement, same as it was for "We Got Hood Love":</strong> a triad gate-keeps —
+    three yes/no questions deciding whether a problem is worth building a system for. A pentad describes
+    what it's like to live inside the system once it's running. Hassabis doesn't need Stage I or Stage III
+    because once a problem is tractable, the starting coordinate and the path taken are both discardable.
+    A tradition that treats melody as covenant was never asking whether the reharmonization was tractable —
+    Black church arrangers have known that every Sunday, for generations. It was asking what it feels like
+    to be carried through the changes without the tune ever leaving your hand.
+  </div>
+</section>
 
 <footer>
   Ukubona · Pentadic Governance Series · Stage I — Event-Stream <span class="end">·</span> append-only, non-adjudicating, θᵗ = Σ Eventᵢ
