@@ -261,6 +261,89 @@
   .schema .k { color: var(--accent-2); }
   .schema .s { color: var(--accent); }
 
+  /* ---------- Pentad ---------- */
+  .pentad {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 8px 28px 48px;
+  }
+  .pentad > .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    display: block;
+    margin-bottom: 16px;
+  }
+  .pentad-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .pcell {
+    background: var(--bg-raised);
+    padding: 18px 14px 20px;
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  .pcell.active {
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg-raised));
+  }
+  .pcell .pnum {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-2);
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .pcell.active .pnum {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .pcell h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+  .pcell h3 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--fg-dim);
+    font-size: 0.85em;
+  }
+  .pcell .pfn {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--fg-dim);
+    margin: 0 0 10px;
+  }
+  .pcell .pwho {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .pentad-grid { grid-template-columns: 1fr; }
+    .pcell { border-bottom: 1px solid var(--rule); }
+  }
+
   /* ---------- Log ---------- */
   .log {
     max-width: 760px;
@@ -434,12 +517,49 @@
   </div>
 </section>
 
+<section class="pentad">
+  <span class="eyebrow">The full pentad · this page instantiates Stage I only</span>
+  <div class="pentad-grid">
+    <div class="pcell" data-n="I">
+      <span class="pnum">I</span>
+      <h3>Philology <em>/ Event-Stream</em></h3>
+      <p class="pfn">The experience is witnessed and appended. No resolution, no ranking — just the log.</p>
+      <p class="pwho">Don McLean (catalytic event) · Lori Lieberman (witness) · Norman Gimbel (naming)</p>
+    </div>
+    <div class="pcell" data-n="II">
+      <span class="pnum">II</span>
+      <h3>12TET</h3>
+      <p class="pfn">The finite pitch alphabet — the encoding space the melody is written into. Not a person; the language itself.</p>
+      <p class="pwho">— structural, unattributed —</p>
+    </div>
+    <div class="pcell" data-n="III">
+      <span class="pnum">III</span>
+      <h3>Melody</h3>
+      <p class="pfn">The canonical, invariant identity of the song. What survives every version. What a congregation actually sings.</p>
+      <p class="pwho">Charles Fox</p>
+    </div>
+    <div class="pcell active" data-n="IV">
+      <span class="pnum">IV</span>
+      <h3>Harmony</h3>
+      <p class="pfn">Interpretation, decoding, reharmonization. Same latent melody, different psychological gravity.</p>
+      <p class="pwho">Roberta Flack &amp; arrangers — Fm7 → B♭m7 → E♭7 → A♭maj7</p>
+    </div>
+    <div class="pcell" data-n="V">
+      <span class="pnum">V</span>
+      <h3>Affect</h3>
+      <p class="pfn">Embodied resonance and cultural adoption. Where the song stops belonging to its makers.</p>
+      <p class="pwho">Choirs · radio · the Fugees · every listener since</p>
+    </div>
+  </div>
+</section>
+
 <main class="log">
 
   <article class="entry">
     <div class="entry-meta">
       <span class="ts">1971 — the catalytic event</span>
       <span class="tag">source</span>
+      <span class="tag">stage I</span>
     </div>
     <h2>Empty Chairs
       <span class="who">Don McLean, live at the Troubadour, Los Angeles</span>
@@ -458,6 +578,7 @@
     <div class="entry-meta">
       <span class="ts">1971 — first compression</span>
       <span class="tag">source</span>
+      <span class="tag">stage I → III</span>
     </div>
     <h2>Killing Me Softly with His Song
       <span class="who">Lori Lieberman, debut album, Capitol Records</span>
@@ -476,6 +597,7 @@
     <div class="entry-meta">
       <span class="ts">1973 — reharmonization</span>
       <span class="tag">source</span>
+      <span class="tag">stage IV</span>
     </div>
     <h2>Killing Me Softly with His Song
       <span class="who">Roberta Flack — No. 1, Billboard Hot 100</span>
